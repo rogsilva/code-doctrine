@@ -9,6 +9,7 @@
 namespace Code\Sistema\Service;
 
 use Code\Sistema\Entity\Interfaces\ProdutoInterface;
+use Code\Sistema\Entity\Produto;
 use Doctrine\ORM\EntityManager;
 use \Code\Sistema\Service\Interfaces\ProdutoServiceInterface;
 
@@ -63,13 +64,36 @@ class ProdutoService implements ProdutoServiceInterface
         public function findAll()
         {
             $repository = $this->em->getRepository('Code\Sistema\Entity\Produto');
-            return $repository->findAll();
+            return $this->toArray($repository->findAll());
         }
 
         public function findById($id)
         {
             $repository = $this->em->getRepository('Code\Sistema\Entity\Produto');
-            return $repository->find($id);
+            return $this->getData($repository->find($id));
+        }
+
+        private function toArray(array $arrayObject)
+        {
+            $newArray = array();
+            foreach($arrayObject as $key => $object){
+                $newArray[$key]['id'] = $object->getId();
+                $newArray[$key]['nome'] = $object->getNome();
+                $newArray[$key]['descricao'] = $object->getDescricao();
+                $newArray[$key]['valor'] = $object->getValor();
+            }
+
+            return $newArray;
+        }
+
+        private function getData(Produto $produto)
+        {
+            $arrayProduto['id'] = $produto->getId();
+            $arrayProduto['nome'] = $produto->getNome();
+            $arrayProduto['descricao'] = $produto->getDescricao();
+            $arrayProduto['valor'] = $produto->getValor();
+
+            return $arrayProduto;
         }
 
 } 

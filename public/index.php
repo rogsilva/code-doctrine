@@ -16,7 +16,7 @@ $app['produtoService'] = function() use ($em){
 
 /************ROTAS DA API**************/
 
-$app->get('/api/produtos/', function () use ($app) {
+$app->get('/api/produtos', function () use ($app) {
     $produtos = $app['produtoService']->findAll();
     return $app->json($produtos);
 });
