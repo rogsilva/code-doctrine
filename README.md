@@ -12,13 +12,13 @@ Utilização
 
 > **Instalação:**
 
-> git clone git@github.com:rogsilva/code-doctrine.git
-> cd code-doctrine
-> Baixe o composer e faça a instalação das dependências
-> mysql -uroot -p
-> mysql> source code_doctrine.sql;
-> mysql> quit
-> Acesse a pasta public do projeto e rode o comando "php -S localhost:8000".
+> - git clone git@github.com:rogsilva/code-doctrine.git
+> - cd code-doctrine
+> - Baixe o composer e faça a instalação das dependências
+> - mysql -uroot -p
+> - mysql> source code_doctrine.sql;
+> - mysql> quit
+> - Acesse a pasta public do projeto e rode o comando "php -S localhost:8000".
 
 #### <i class="icon-refresh"></i> Rotas
 
