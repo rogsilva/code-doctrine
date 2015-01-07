@@ -12,10 +12,13 @@ Utilização
 
 > **Instalação:**
 
-> - Faça o clone do projeto.
-> - Crie um banco de dados e faça a configuração de acesso no arquivo bootstrap.php.
-> - Acesse a pasta bin do projeto e rode o comando "php doctrine orm:schema-tool:create".
-> - Acesse a pasta public do projeto e rode o comando "php -S localhost:8000".
+> git clone git@github.com:rogsilva/code-doctrine.git
+> cd code-doctrine
+> Baixe o composer e faça a instalação das dependências
+> mysql -uroot -p
+> mysql> source code_doctrine.sql;
+> mysql> quit
+> Acesse a pasta public do projeto e rode o comando "php -S localhost:8000".
 
 #### <i class="icon-refresh"></i> Rotas
 
