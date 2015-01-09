@@ -54,9 +54,7 @@ class Paginator implements PaginatorInterface
                 $links.= $this->tag_open_disable .'<a href="#"><</a>'. $this->tag_close;
             }
 
-            // Faz aparecer os numeros das página entre o ANTERIOR e PROXIMO
             for( $i_pg= 1 ; $i_pg <= $this->last ; $i_pg++ ) {
-                // Verifica se a página que o navegante esta e retira o link do número para identificar visualmente
                 if ( $this->page == $i_pg or ($this->page == null and $i_pg == 1) ) {
                     $links.= $this->tag_open_active . '<a href="#">' . $i_pg . '</a>' . $this->tag_close;
                 } else {
@@ -64,7 +62,6 @@ class Paginator implements PaginatorInterface
                 }
             }
 
-            // Verifica se esta na ultima página, se nao estiver ele libera o link para próxima
             if ($this->page < $this->last) {
                 $links.= $this->tag_open .'<a href="'. $this->url_base . '/' . $this->next . $this->urlVariables .'" title="Avançar">></a>'. $this->tag_close;
                 $links.= $this->tag_open .'<a href="'. $this->url_base . '/' . $this->last . $this->urlVariables .'" title="Final">>></a>'. $this->tag_close;
