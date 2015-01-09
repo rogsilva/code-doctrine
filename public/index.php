@@ -94,13 +94,44 @@ $app->get('/', function () use ($app) {
 
 
 //Cria a rota /produtos
-$app->get('/produtos', function () use ($app) {
+$app->get('/produtos/listar/{page}', function (Request $request, $page) use ($app) {
 
-    $produtos = $app['produtoService']->findAll();
+    //Limite de registros
+    $limitRegs = 2;
+
+    $numProdutos = $app['produtoService']->getNumProdutos();
+
+    $paginator = new \Code\Sistema\Helper\Paginator($page, $limitRegs, $numProdutos, $app['url_generator']->generate('produtos'));
+
+    $produtos = $app['produtoService']->getProdutos($page, $limitRegs);
+
     return $app['twig']->render('produtos/index.twig', array(
-        'produtos' => $produtos
+        'produtos' => $produtos,
+        'paginacao' => $paginator->createLinks()
     ));
-})->bind('produtos');
+})  ->bind('produtos')
+    ->value('page', '');
+
+//Cria a rota /produtos/buscar
+$app->get('/produtos/buscar/{page}', function (Request $request, $page) use ($app) {
+
+    $search = $request->get('search');
+
+    //Limite de registros
+    $limitRegs = 2;
+
+    $numProdutos = $app['produtoService']->getNumProdutosSearch($search);
+
+    $paginator = new \Code\Sistema\Helper\Paginator($page, $limitRegs, $numProdutos, $app['url_generator']->generate('buscar-produtos'), array('search' => $search));
+
+    $produtos = $app['produtoService']->search($page, $limitRegs, $search);
+    return $app['twig']->render('produtos/search.twig', array(
+        'produtos' => $produtos,
+        'paginacao' => $paginator->createLinks(),
+        'search' => $search
+    ));
+})  ->bind('buscar-produtos')
+    ->value('page', '');
 
 //Cria a rota /produtos/novo
 $app->get('/produtos/novo', function () use ($app) {
@@ -131,11 +162,11 @@ $app->post('/produtos/cadastrar', function(Request $request) use ($app){
     $data = iterator_to_array($request->request->getIterator());
     if($app['produtoService']->insert($data)){
         $app['session']->getFlashBag()->add('messageSuccess', 'Cadastro efetuado com sucesso.');
-        return $app->redirect('/produtos');
+        return $app->redirect('/produtos/listar');
     }
 
     $app['session']->getFlashBag()->add('messageFail', 'Houve um erro ao cadastrar.');
-    return $app->redirect('/produtos');
+    return $app->redirect('/produtos/listar');
 
 })->bind('cadastrar-produto');
 
@@ -145,11 +176,11 @@ $app->put('/produtos/alterar', function(Request $request) use ($app){
     $data = iterator_to_array($request->request->getIterator());
     if($app['produtoService']->update($data)){
         $app['session']->getFlashBag()->add('messageSuccess', 'Cadastro alterado com sucesso.');
-        return $app->redirect('/produtos');
+        return $app->redirect('/produtos/listar');
     }
 
     $app['session']->getFlashBag()->add('messageFail', 'Houve um erro ao alterar o registro.');
-    return $app->redirect('/produtos');
+    return $app->redirect('/produtos/listar');
 
 })->bind('alterar-cadastro-produto');
 
@@ -159,11 +190,11 @@ $app->delete('/produtos/delete', function(Request $request) use ($app){
     $data = iterator_to_array($request->request->getIterator());
     if($app['produtoService']->delete($data['id'])){
         $app['session']->getFlashBag()->add('messageSuccess', 'Cadastro removido com sucesso.');
-        return $app->redirect('/produtos');
+        return $app->redirect('/produtos/listar');
     }
 
     $app['session']->getFlashBag()->add('messageFail', 'Houve um erro ao remover o registro.');
-    return $app->redirect('/produtos');
+    return $app->redirect('/produtos/listar');
 
 })->bind('remover-cadastro-produto');
 

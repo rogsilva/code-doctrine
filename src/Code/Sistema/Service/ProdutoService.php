@@ -12,6 +12,7 @@ use Code\Sistema\Entity\Interfaces\ProdutoInterface;
 use Code\Sistema\Entity\Produto;
 use Doctrine\ORM\EntityManager;
 use \Code\Sistema\Service\Interfaces\ProdutoServiceInterface;
+use Symfony\Component\Security\Core\Exception\InvalidArgumentException;
 
 class ProdutoService implements ProdutoServiceInterface
 {
@@ -67,10 +68,43 @@ class ProdutoService implements ProdutoServiceInterface
             return $this->toArray($repository->findAll());
         }
 
+        public function getProdutos($page, $limitRegs)
+        {
+            $inicial = ($page > 1) ? ($page - 1) * $limitRegs : 0;
+
+            $repository = $this->em->getRepository('Code\Sistema\Entity\Produto');
+            return $this->toArray($repository->listProdutos($inicial, $limitRegs));
+        }
+
+        public function search($page, $limitRegs, $search)
+        {
+            $inicial = ($page > 1) ? ($page - 1) * $limitRegs : 0;
+
+            $repository = $this->em->getRepository('Code\Sistema\Entity\Produto');
+            return $this->toArray($repository->search($inicial, $limitRegs, $search));
+        }
+
         public function findById($id)
         {
-            $repository = $this->em->getRepository('Code\Sistema\Entity\Produto');
-            return $this->getData($repository->find($id));
+            try
+            {
+                $repository = $this->em->getRepository('Code\Sistema\Entity\Produto');
+                $produto = $repository->find($id);
+                if(!$produto)
+                    throw new InvalidArgumentException("Produto nao existe!");
+
+                return $this->getData($produto);
+            }
+            catch(\Exception $e)
+            {
+                return array(
+                    'message', $e->getMessage(),
+                    'id' => 0,
+                    'nome' => '',
+                    'descricao' => '',
+                    'valor' => ''
+                );
+            }
         }
 
         private function toArray(array $arrayObject)
@@ -84,6 +118,18 @@ class ProdutoService implements ProdutoServiceInterface
             }
 
             return $newArray;
+        }
+
+        public function getNumProdutos()
+        {
+            $repository = $this->em->getRepository('Code\Sistema\Entity\Produto');
+            return count($repository->findAll());
+        }
+
+        public function getNumProdutosSearch($search)
+        {
+            $repository = $this->em->getRepository('Code\Sistema\Entity\Produto');
+            return count($repository->findAllSearch($search));
         }
 
         private function getData(Produto $produto)

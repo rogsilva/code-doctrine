@@ -6,7 +6,7 @@ use \Code\Sistema\Entity\Interfaces\ProdutoInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Code\Sistema\Entity\ProdutoRepository")
  * @ORM\Table(name="produtos")
  */
 

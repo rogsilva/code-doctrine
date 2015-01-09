@@ -18,5 +18,8 @@ interface ProdutoServiceInterface
     public function update(array $data);
     public function delete($id);
     public function findAll();
+    public function getProdutos($page, $limit);
+    public function search($page, $limit, $search);
     public function findById($id);
+    public function getNumProdutos();
 } 
