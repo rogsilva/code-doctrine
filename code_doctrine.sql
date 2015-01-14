@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: 07-Jan-2015 às 11:45
+-- Generation Time: 14-Jan-2015 às 21:00
 -- Versão do servidor: 5.5.38-0ubuntu0.14.04.1
 -- PHP Version: 5.5.9-1ubuntu4.5
 
@@ -24,6 +24,25 @@ USE `code_doctrine`;
 -- --------------------------------------------------------
 
 --
+-- Estrutura da tabela `categorias`
+--
+
+CREATE TABLE IF NOT EXISTS `categorias` (
+`id` int(11) NOT NULL,
+  `nome` varchar(255) COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=5 ;
+
+--
+-- Extraindo dados da tabela `categorias`
+--
+
+INSERT INTO `categorias` (`id`, `nome`) VALUES
+(1, 'EletrÃ´nicos'),
+(4, 'Lazer');
+
+-- --------------------------------------------------------
+
+--
 -- Estrutura da tabela `produtos`
 --
 
@@ -31,24 +50,81 @@ CREATE TABLE IF NOT EXISTS `produtos` (
 `id` int(11) NOT NULL,
   `nome` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `descricao` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `valor` double NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
+  `valor` double NOT NULL,
+  `categoria_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=11 ;
 
 --
 -- Extraindo dados da tabela `produtos`
 --
 
-INSERT INTO `produtos` (`id`, `nome`, `descricao`, `valor`) VALUES
-(1, 'Notebook', 'Core I3, 500GB, 8GB RAM', 1300.5);
+INSERT INTO `produtos` (`id`, `nome`, `descricao`, `valor`, `categoria_id`) VALUES
+(9, 'Produto 1', 'Teste', 100, 4);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `produtos_tags`
+--
+
+CREATE TABLE IF NOT EXISTS `produtos_tags` (
+  `produto_id` int(11) NOT NULL,
+  `tag_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Extraindo dados da tabela `produtos_tags`
+--
+
+INSERT INTO `produtos_tags` (`produto_id`, `tag_id`) VALUES
+(9, 1),
+(9, 3);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `tags`
+--
+
+CREATE TABLE IF NOT EXISTS `tags` (
+`id` int(11) NOT NULL,
+  `nome` varchar(255) COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4 ;
+
+--
+-- Extraindo dados da tabela `tags`
+--
+
+INSERT INTO `tags` (`id`, `nome`) VALUES
+(1, 'Entretenimento'),
+(3, 'DiversÃ£o Tag');
 
 --
 -- Indexes for dumped tables
 --
 
 --
+-- Indexes for table `categorias`
+--
+ALTER TABLE `categorias`
+ ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `produtos`
 --
 ALTER TABLE `produtos`
+ ADD PRIMARY KEY (`id`), ADD KEY `IDX_3E524353397707A` (`categoria_id`);
+
+--
+-- Indexes for table `produtos_tags`
+--
+ALTER TABLE `produtos_tags`
+ ADD PRIMARY KEY (`produto_id`,`tag_id`), ADD KEY `IDX_F00CAA2A105CFD56` (`produto_id`), ADD KEY `IDX_F00CAA2ABAD26311` (`tag_id`);
+
+--
+-- Indexes for table `tags`
+--
+ALTER TABLE `tags`
  ADD PRIMARY KEY (`id`);
 
 --
@@ -56,10 +132,37 @@ ALTER TABLE `produtos`
 --
 
 --
+-- AUTO_INCREMENT for table `categorias`
+--
+ALTER TABLE `categorias`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
+--
 -- AUTO_INCREMENT for table `produtos`
 --
 ALTER TABLE `produtos`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=11;
+--
+-- AUTO_INCREMENT for table `tags`
+--
+ALTER TABLE `tags`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Limitadores para a tabela `produtos`
+--
+ALTER TABLE `produtos`
+ADD CONSTRAINT `FK_3E524353397707A` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`);
+
+--
+-- Limitadores para a tabela `produtos_tags`
+--
+ALTER TABLE `produtos_tags`
+ADD CONSTRAINT `FK_F00CAA2A105CFD56` FOREIGN KEY (`produto_id`) REFERENCES `produtos` (`id`),
+ADD CONSTRAINT `FK_F00CAA2ABAD26311` FOREIGN KEY (`tag_id`) REFERENCES `tags` (`id`);
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
