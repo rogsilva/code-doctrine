@@ -27,14 +27,32 @@ Utilização
 > - /api/produtos - Seleciona todos os registros.
 > - /api/produtos/{id} - Seleciona um único registro de acordo com o id passado.
 
+> - /api/categorias - Seleciona todos os registros.
+> - /api/categorias/{id} - Seleciona um único registro de acordo com o id passado.
+
+> - /api/tags - Seleciona todos os registros.
+> - /api/tags/{id} - Seleciona um único registro de acordo com o id passado.
+
 > **Utilizando o método HTTP POST:**
 
-> - /api/produtos - Adiciona um novo registro.
+> - /api/produtos/ - Adiciona um novo registro.
+
+> - /api/categorias/ - Adiciona um novo registro.
+
+> - /api/tags/ - Adiciona um novo registro.
 
 > **Utilizando o método HTTP PUT:**
 
 > - /api/produtos/{id} - Altera um registro de acordo com o id passado.
 
+> - /api/categorias/{id} - Altera um registro de acordo com o id passado.
+
+> - /api/tags/{id} - Altera um registro de acordo com o id passado.
+
 > **Utilizando o método HTTP DELETE:**
 
 > - /api/produtos/{id} - Remove um registro de acordo com o id passado.
+
+> - /api/categorias/{id} - Remove um registro de acordo com o id passado.
+
+> - /api/tags/{id} - Remove um registro de acordo com o id passado.

@@ -40,6 +40,7 @@
                     <th>Nome</th>
                     <th>Descrição</th>
                     <th>Valor</th>
+                    <th>Categoria</th>
                     <th>Ações</th>
                 </tr>
             </thead>
@@ -50,6 +51,7 @@
                         <td>{{ produto.nome }}</td>
                         <td>{{ produto.descricao }}</td>
                         <td>{{ produto.valor|number_format(2, ',', '.') }}</td>
+                        <td>{{ produto.categoria.nome }}</td>
                         <td>
                             <a href="{{ path('editar-produto', {id: produto.id}) }}" class="btn btn-info btn-sm">Editar</a>
                             <a href="{{ path('remover-produto', {id: produto.id}) }}" class="btn btn-danger btn-sm">Remover</a>

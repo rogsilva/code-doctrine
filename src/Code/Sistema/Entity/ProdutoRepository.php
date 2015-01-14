@@ -11,6 +11,7 @@ namespace Code\Sistema\Entity;
 
 use Doctrine\ORM\EntityRepository;
 
+
 class ProdutoRepository extends EntityRepository
 {
 
@@ -46,6 +47,14 @@ class ProdutoRepository extends EntityRepository
                 ->setMaxResults($limit)
                 ->getQuery()
                 ->getResult();
+    }
+
+    public function removeAssociationTag($idProduto)
+    {
+        $sql = "DELETE FROM produtos_tags WHERE produto_id = :id";
+        $params = array('id' => $idProduto);
+
+        return $this->getEntityManager()->getConnection()->prepare($sql)->execute($params);
     }
 
 } 

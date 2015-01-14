@@ -15,6 +15,8 @@ $app->register(new Silex\Provider\SessionServiceProvider());
 
 $app->register(new Silex\Provider\ValidatorServiceProvider());
 
+//$app->register(new Silex\Provider\ServiceControllerServiceProvider());
+
 
 /*Doctrine config*/
 use Doctrine\ORM\Tools\Setup,

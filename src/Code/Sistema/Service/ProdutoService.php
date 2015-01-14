@@ -32,6 +32,14 @@ class ProdutoService implements ProdutoServiceInterface
             $this->produto->setDescricao($data['descricao']);
             $this->produto->setValor($data['valor']);
 
+            $categoria = $this->em->getReference("Code\Sistema\Entity\Categoria", $data['categoria']);
+            $this->produto->setCategoria($categoria);
+
+            foreach($data['tags'] as $tag){
+                $entityTag = $this->em->getReference("Code\Sistema\Entity\Tag", $tag);
+                $this->produto->addTag($entityTag);
+            }
+
             $this->em->persist($this->produto);
             $this->em->flush();
 
@@ -45,6 +53,19 @@ class ProdutoService implements ProdutoServiceInterface
             $this->produto->setNome($data['nome']);
             $this->produto->setDescricao($data['descricao']);
             $this->produto->setValor($data['valor']);
+
+            $categoria = $this->em->getReference("Code\Sistema\Entity\Categoria", $data['categoria']);
+            $this->produto->setCategoria($categoria);
+
+            //Remove a associação das tags
+            $produtoRepository = $this->em->getRepository('Code\Sistema\Entity\Produto', $this->produto->getId());
+            $produtoRepository->removeAssociationTag($this->produto->getId());
+
+
+            foreach($data['tags'] as $tag){
+                $entityTag = $this->em->getReference("Code\Sistema\Entity\Tag", $tag);
+                $this->produto->addTag($entityTag);
+            }
 
             $this->em->persist($this->produto);
             $this->em->flush();
@@ -115,6 +136,12 @@ class ProdutoService implements ProdutoServiceInterface
                 $newArray[$key]['nome'] = $object->getNome();
                 $newArray[$key]['descricao'] = $object->getDescricao();
                 $newArray[$key]['valor'] = $object->getValor();
+                $newArray[$key]['categoria']['id'] = $object->getCategoria()->getId();
+                $newArray[$key]['categoria']['nome'] = $object->getCategoria()->getNome();
+                foreach($object->getTags() as $k => $tag){
+                    $newArray[$key]['tags'][$k]['id'] = $tag->getId();
+                    $newArray[$key]['tags'][$k]['nome'] = $tag->getNome();
+                }
             }
 
             return $newArray;
@@ -138,7 +165,16 @@ class ProdutoService implements ProdutoServiceInterface
             $arrayProduto['nome'] = $produto->getNome();
             $arrayProduto['descricao'] = $produto->getDescricao();
             $arrayProduto['valor'] = $produto->getValor();
-
+            $arrayProduto['categoria']['id'] = $produto->getCategoria()->getId();
+            $arrayProduto['categoria']['nome'] = $produto->getCategoria()->getNome();
+            if(count($produto->getTags()) > 0){
+                foreach($produto->getTags() as $k => $tag){
+                    $arrayProduto['tags'][$k]['id'] = $tag->getId();
+                    $arrayProduto['tags'][$k]['nome'] = $tag->getNome();
+                }
+            }else{
+                $arrayProduto['tags'] = null;
+            }
             return $arrayProduto;
         }
 
