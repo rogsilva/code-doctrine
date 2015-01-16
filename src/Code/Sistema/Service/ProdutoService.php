@@ -28,49 +28,69 @@ class ProdutoService implements ProdutoServiceInterface
 
         public function insert(array $data)
         {
-            $this->produto->setNome($data['nome']);
-            $this->produto->setDescricao($data['descricao']);
-            $this->produto->setValor($data['valor']);
+            try{
+                $this->produto->setNome($data['nome']);
+                $this->produto->setDescricao($data['descricao']);
+                if($data['valor'] < 0)
+                    throw new InvalidArgumentException('O valor não pode ser negativo ');
 
-            $categoria = $this->em->getReference("Code\Sistema\Entity\Categoria", $data['categoria']);
-            $this->produto->setCategoria($categoria);
+                $this->produto->setValor($data['valor']);
 
-            foreach($data['tags'] as $tag){
-                $entityTag = $this->em->getReference("Code\Sistema\Entity\Tag", $tag);
-                $this->produto->addTag($entityTag);
+                if($data['categoria'] == null)
+                    throw new InvalidArgumentException("A categoria é obrigatória!");
+
+                $categoria = $this->em->getReference("Code\Sistema\Entity\Categoria", $data['categoria']);
+                $this->produto->setCategoria($categoria);
+
+                foreach($data['tags'] as $tag){
+                    $entityTag = $this->em->getReference("Code\Sistema\Entity\Tag", $tag);
+                    $this->produto->addTag($entityTag);
+                }
+
+                $this->em->persist($this->produto);
+                $this->em->flush();
+
+                return $this->produto;
+            }catch (\Exception $e){
+                die('Message: '. $e->getMessage());
             }
-
-            $this->em->persist($this->produto);
-            $this->em->flush();
-
-            return $this->produto;
         }
 
         public function update(array $data)
         {
-            $this->produto = $this->em->getReference('Code\Sistema\Entity\Produto', $data['id']);
+            try{
+                $this->produto = $this->em->getReference('Code\Sistema\Entity\Produto', $data['id']);
 
-            $this->produto->setNome($data['nome']);
-            $this->produto->setDescricao($data['descricao']);
-            $this->produto->setValor($data['valor']);
+                $this->produto->setNome($data['nome']);
+                $this->produto->setDescricao($data['descricao']);
+                if($data['valor'] < 0)
+                    throw new InvalidArgumentException('O valor não pode ser negativo ');
 
-            $categoria = $this->em->getReference("Code\Sistema\Entity\Categoria", $data['categoria']);
-            $this->produto->setCategoria($categoria);
+                $this->produto->setValor($data['valor']);
+                
+                if($data['categoria'] == null)
+                    throw new InvalidArgumentException("A categoria é obrigatória!");
 
-            //Remove a associação das tags
-            $produtoRepository = $this->em->getRepository('Code\Sistema\Entity\Produto', $this->produto->getId());
-            $produtoRepository->removeAssociationTag($this->produto->getId());
+                $categoria = $this->em->getReference("Code\Sistema\Entity\Categoria", $data['categoria']);
+                $this->produto->setCategoria($categoria);
+
+                //Remove a associação das tags
+                $produtoRepository = $this->em->getRepository('Code\Sistema\Entity\Produto', $this->produto->getId());
+                $produtoRepository->removeAssociationTag($this->produto->getId());
 
 
-            foreach($data['tags'] as $tag){
-                $entityTag = $this->em->getReference("Code\Sistema\Entity\Tag", $tag);
-                $this->produto->addTag($entityTag);
+                foreach($data['tags'] as $tag){
+                    $entityTag = $this->em->getReference("Code\Sistema\Entity\Tag", $tag);
+                    $this->produto->addTag($entityTag);
+                }
+
+                $this->em->persist($this->produto);
+                $this->em->flush();
+
+                return $this->produto;
+            }catch (\Exception $e){
+                die('Message: '. $e->getMessage());
             }
-
-            $this->em->persist($this->produto);
-            $this->em->flush();
-
-            return $this->produto;
         }
 
         public function delete($id)

@@ -60,7 +60,7 @@ class ProdutoApiController implements ControllerProviderInterface
         $data['descricao'] = $request->get('descricao');
         $data['valor'] = $request->get('valor');
         $data['categoria'] = $request->get('categoria');
-        $data['tags'] = $request->get('tag');
+        $data['tags'] = explode(',', $request->get('tags'));
 
         if($this->service->insert($data)){
             return $app->json(['success'=>true, 'messages' => ['Inserido com sucesso']]);

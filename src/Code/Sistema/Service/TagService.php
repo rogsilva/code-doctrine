@@ -51,6 +51,10 @@ class TagService implements TagServiceInterface
         {
             $this->tag = $this->em->getReference('Code\Sistema\Entity\Tag', $id);
 
+            //Remove a associação dos produtos
+            $tagRepository = $this->em->getRepository('Code\Sistema\Entity\Tag', $this->tag->getId());
+            $tagRepository->removeAssociationProduto($this->tag->getId());
+
             $this->em->remove($this->tag);
             $this->em->flush();
 

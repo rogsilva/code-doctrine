@@ -49,12 +49,16 @@ class CategoriaService implements CategoriaServiceInterface
 
         public function delete($id)
         {
-            $this->categoria = $this->em->getReference('Code\Sistema\Entity\Categoria', $id);
+            try{
+                $this->categoria = $this->em->getReference('Code\Sistema\Entity\Categoria', $id);
 
-            $this->em->remove($this->categoria);
-            $this->em->flush();
+                $this->em->remove($this->categoria);
+                $this->em->flush();
 
-            return true;
+                return true;
+            }catch (\Exception $e){
+                die('A categoria deve estar vazia para ser removida!');
+            }
         }
 
         public function findAll()
