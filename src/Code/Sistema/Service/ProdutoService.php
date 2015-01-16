@@ -67,17 +67,15 @@ class ProdutoService implements ProdutoServiceInterface
                     throw new InvalidArgumentException('O valor não pode ser negativo ');
 
                 $this->produto->setValor($data['valor']);
-                
+
                 if($data['categoria'] == null)
                     throw new InvalidArgumentException("A categoria é obrigatória!");
 
                 $categoria = $this->em->getReference("Code\Sistema\Entity\Categoria", $data['categoria']);
                 $this->produto->setCategoria($categoria);
 
-                //Remove a associação das tags
-                $produtoRepository = $this->em->getRepository('Code\Sistema\Entity\Produto', $this->produto->getId());
+                $produtoRepository = $this->em->getRepository("Code\Sistema\Entity\Produto", $this->produto->getId());
                 $produtoRepository->removeAssociationTag($this->produto->getId());
-
 
                 foreach($data['tags'] as $tag){
                     $entityTag = $this->em->getReference("Code\Sistema\Entity\Tag", $tag);
@@ -156,8 +154,13 @@ class ProdutoService implements ProdutoServiceInterface
                 $newArray[$key]['nome'] = $object->getNome();
                 $newArray[$key]['descricao'] = $object->getDescricao();
                 $newArray[$key]['valor'] = $object->getValor();
-                $newArray[$key]['categoria']['id'] = $object->getCategoria()->getId();
-                $newArray[$key]['categoria']['nome'] = $object->getCategoria()->getNome();
+                if($object->getCategoria()){
+                    $newArray[$key]['categoria']['id'] = $object->getCategoria()->getId();
+                    $newArray[$key]['categoria']['nome'] = $object->getCategoria()->getNome();
+                }else{
+                    $newArray[$key]['categoria']['id'] = null;
+                    $newArray[$key]['categoria']['nome'] = null;
+                }
                 foreach($object->getTags() as $k => $tag){
                     $newArray[$key]['tags'][$k]['id'] = $tag->getId();
                     $newArray[$key]['tags'][$k]['nome'] = $tag->getNome();
@@ -185,8 +188,13 @@ class ProdutoService implements ProdutoServiceInterface
             $arrayProduto['nome'] = $produto->getNome();
             $arrayProduto['descricao'] = $produto->getDescricao();
             $arrayProduto['valor'] = $produto->getValor();
-            $arrayProduto['categoria']['id'] = $produto->getCategoria()->getId();
-            $arrayProduto['categoria']['nome'] = $produto->getCategoria()->getNome();
+            if($produto->getCategoria()){
+                $arrayProduto['categoria']['id'] = $produto->getCategoria()->getId();
+                $arrayProduto['categoria']['nome'] = $produto->getCategoria()->getNome();
+            }else{
+                $arrayProduto['categoria']['id'] = null;
+                $arrayProduto['categoria']['nome'] = null;
+            }
             if(count($produto->getTags()) > 0){
                 foreach($produto->getTags() as $k => $tag){
                     $arrayProduto['tags'][$k]['id'] = $tag->getId();
