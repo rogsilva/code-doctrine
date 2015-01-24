@@ -61,6 +61,7 @@ class ProdutoApiController implements ControllerProviderInterface
         $data['valor'] = $request->get('valor');
         $data['categoria'] = $request->get('categoria');
         $data['tags'] = explode(',', $request->get('tags'));
+        $data['file'] = $request->files->get('path');
 
         if($this->service->insert($data)){
             return $app->json(['success'=>true, 'messages' => ['Inserido com sucesso']]);
@@ -83,6 +84,7 @@ class ProdutoApiController implements ControllerProviderInterface
         $data['valor'] = $request->get('valor');
         $data['categoria'] = $request->get('categoria');
         $data['tags'] = explode(',', $request->get('tags'));
+        $data['file'] = $request->files->get('path');
 
         if($this->service->update($data)){
             return $app->json(['success'=>true, 'messages' => ['Alterado com sucesso']]);

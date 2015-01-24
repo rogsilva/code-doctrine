@@ -6,10 +6,14 @@ use \Code\Sistema\Entity\Interfaces\ProdutoInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Code\Sistema\Entity\Categoria;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Code\Sistema\Service\ProdutoService;
+
 
 /**
  * @ORM\Entity(repositoryClass="Code\Sistema\Entity\ProdutoRepository")
  * @ORM\Table(name="produtos")
+ * @ORM\HasLifecycleCallbacks
  */
 
 class Produto implements ProdutoInterface
@@ -50,6 +54,51 @@ class Produto implements ProdutoInterface
          *      )
          **/
         private $tags;
+
+        /**
+         * @ORM\Column(type="string", length=255, nullable=true)
+         */
+        private $path;
+
+
+        private $file;
+
+        /**
+         * @ORM\PrePersist
+         * @ORM\PreUpdate
+         */
+        public function createPath()
+        {
+            $this->path = ProdutoService::uploadImage($this);
+        }
+
+        /**
+         * @ORM\PreRemove
+         */
+        public function removePath()
+        {
+            return ProdutoService::removeImage($this);
+        }
+
+        public function getPath()
+        {
+            return $this->path;
+        }
+
+        public function setFile(UploadedFile $file = null)
+        {
+            $this->file = $file;
+        }
+
+        /**
+         * Get file.
+         *
+         * @return UploadedFile
+         */
+        public function getFile()
+        {
+            return $this->file;
+        }
 
         public function __construct()
         {
@@ -123,5 +172,35 @@ class Produto implements ProdutoInterface
         }
 
 
+
+        public function getAbsolutePath()
+        {
+            return null === $this->path
+                ? null
+                : $this->getUploadRootDir().'/'.$this->path;
+        }
+
+
+        public function getWebPath()
+        {
+            return null === $this->path
+                ? null
+                : $this->getUploadDir().'/'.$this->path;
+        }
+
+        public function getUploadRootDir()
+        {
+            return __DIR__.'/../../../../public/'.$this->getUploadDir();
+        }
+
+        public function getUploadDir()
+        {
+            return 'uploads/images';
+        }
+
+        public function getUploadAcceptedTypes()
+        {
+            return array('jpg', 'jpeg', 'png');
+        }
 
 } 

@@ -8,6 +8,8 @@
 
 namespace Code\Sistema\Entity\Interfaces;
 
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+
 
 interface ProdutoInterface
 {
@@ -22,4 +24,14 @@ interface ProdutoInterface
 
     public function setValor($valor);
     public function getValor();
+
+    public function createPath();
+    public function removePath();
+    public function getPath();
+
+    public function setFile(UploadedFile $file);
+    public function getFile();
+
+    //public function getAbsolutePath();
+    //public function getWebPath();
 }

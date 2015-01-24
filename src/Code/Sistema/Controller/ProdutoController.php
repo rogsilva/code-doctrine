@@ -53,7 +53,7 @@ class ProdutoController implements ControllerProviderInterface
     public function indexAction(Application $app, $page)
     {
         //Limite de registros
-        $limitRegs = 2;
+        $limitRegs = 10;
 
         $numProdutos = $this->service->getNumProdutos();
 
@@ -95,6 +95,7 @@ class ProdutoController implements ControllerProviderInterface
             $data['valor'] = $request->get('valor');
             $data['categoria'] = $request->get('categoria');
             $data['tags'] = $request->get('tag');
+            $data['file'] = $request->files->get('path');
             $this->service->insert($data);
 
             return $app->redirect('/produtos/listar');
@@ -115,6 +116,7 @@ class ProdutoController implements ControllerProviderInterface
             $data['valor'] = $request->get('valor');
             $data['categoria'] = $request->get('categoria');
             $data['tags'] = $request->get('tag');
+            $data['file'] = $request->files->get('path');
             $this->service->update($data);
 
             return $app->redirect('/produtos/listar');

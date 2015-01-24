@@ -13,6 +13,8 @@ use Code\Sistema\Entity\Produto;
 use Doctrine\ORM\EntityManager;
 use \Code\Sistema\Service\Interfaces\ProdutoServiceInterface;
 use Symfony\Component\Security\Core\Exception\InvalidArgumentException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+
 
 class ProdutoService implements ProdutoServiceInterface
 {
@@ -47,6 +49,8 @@ class ProdutoService implements ProdutoServiceInterface
                     $this->produto->addTag($entityTag);
                 }
 
+                $this->produto->setFile($data['file']);
+
                 $this->em->persist($this->produto);
                 $this->em->flush();
 
@@ -80,6 +84,12 @@ class ProdutoService implements ProdutoServiceInterface
                 foreach($data['tags'] as $tag){
                     $entityTag = $this->em->getReference("Code\Sistema\Entity\Tag", $tag);
                     $this->produto->addTag($entityTag);
+                }
+
+                if($data['file'] != null){
+                    $produtoAntes = $produtoRepository->find($this->produto->getId());
+                    self::removeImage($produtoAntes);
+                    $this->produto->setFile($data['file']);
                 }
 
                 $this->em->persist($this->produto);
@@ -141,7 +151,8 @@ class ProdutoService implements ProdutoServiceInterface
                     'id' => 0,
                     'nome' => '',
                     'descricao' => '',
-                    'valor' => ''
+                    'valor' => '',
+                    'path' => ''
                 );
             }
         }
@@ -154,6 +165,7 @@ class ProdutoService implements ProdutoServiceInterface
                 $newArray[$key]['nome'] = $object->getNome();
                 $newArray[$key]['descricao'] = $object->getDescricao();
                 $newArray[$key]['valor'] = $object->getValor();
+                $newArray[$key]['path'] = $object->getPath();
                 if($object->getCategoria()){
                     $newArray[$key]['categoria']['id'] = $object->getCategoria()->getId();
                     $newArray[$key]['categoria']['nome'] = $object->getCategoria()->getNome();
@@ -188,6 +200,7 @@ class ProdutoService implements ProdutoServiceInterface
             $arrayProduto['nome'] = $produto->getNome();
             $arrayProduto['descricao'] = $produto->getDescricao();
             $arrayProduto['valor'] = $produto->getValor();
+            $arrayProduto['path'] = $produto->getPath();
             if($produto->getCategoria()){
                 $arrayProduto['categoria']['id'] = $produto->getCategoria()->getId();
                 $arrayProduto['categoria']['nome'] = $produto->getCategoria()->getNome();
@@ -204,6 +217,39 @@ class ProdutoService implements ProdutoServiceInterface
                 $arrayProduto['tags'] = null;
             }
             return $arrayProduto;
+        }
+
+
+        static public function uploadImage(Produto $produto)
+        {
+            if (null === $produto->getFile()) {
+                return;
+            }
+
+            if(!in_array($produto->getFile()->getClientOriginalExtension(), $produto->getUploadAcceptedTypes()))
+                throw new InvalidArgumentException("Tipo de arquivo não permitido");
+
+            $filename = sha1($produto->getFile()->getClientOriginalName() . date('Y-m-d H:i:s')) . '.' . $produto->getFile()->getClientOriginalExtension();
+
+            $produto->getFile()->move(
+                $produto->getUploadRootDir(),
+                $filename
+            );
+
+            return $filename;
+
+        }
+
+        static public function removeImage(Produto $produto)
+        {
+            if (null === $produto->getPath()) {
+                return;
+            }
+
+            if(file_exists($produto->getAbsolutePath()))
+                unlink($produto->getAbsolutePath());
+
+            return true;
         }
 
 } 
