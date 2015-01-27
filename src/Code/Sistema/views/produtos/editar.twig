@@ -55,7 +55,11 @@
             <div class="form-group">
                 <label>Imagem</label>
                 <input type="file" name="path" class="form-control">
+                {% if (produto.path != null) %}
                 <img src="/uploads/images/{{ produto.path }}" width="200" alt=""/>
+                {% else %}
+                    <img src="/uploads/images/sem_foto.jpg" width="200" alt=""/>
+                {% endif %}
             </div>
 
 

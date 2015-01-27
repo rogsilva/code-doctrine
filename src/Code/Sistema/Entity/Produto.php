@@ -69,7 +69,8 @@ class Produto implements ProdutoInterface
          */
         public function createPath()
         {
-            $this->path = ProdutoService::uploadImage($this);
+            if($this->file != null)
+                $this->path = ProdutoService::uploadImage($this);
         }
 
         /**
