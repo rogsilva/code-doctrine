@@ -74,7 +74,7 @@ class ProdutoController implements ControllerProviderInterface
         //Limite de registros
         $limitRegs = 2;
 
-        $numProdutos = $app['produtoService']->getNumProdutosSearch($search);
+        $numProdutos = $this->service->getNumProdutosSearch($search);
 
         $paginator = new \Code\Sistema\Helper\Paginator($page, $limitRegs, $numProdutos, $app['url_generator']->generate('buscar-produtos'), array('search' => $search));
 

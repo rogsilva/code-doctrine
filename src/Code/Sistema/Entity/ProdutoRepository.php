@@ -19,8 +19,10 @@ class ProdutoRepository extends EntityRepository
     {
         return $this
             ->createQueryBuilder("p")
+            ->leftJoin('p.tags', 't')
             ->where('p.nome LIKE :busca')
             ->orWhere('p.descricao LIKE :busca')
+            ->orWhere('t.nome LIKE :busca')
             ->setParameter('busca', "%{$busca}%")
             ->setFirstResult($inicio)
             ->setMaxResults($limit)
@@ -32,8 +34,10 @@ class ProdutoRepository extends EntityRepository
     {
         return $this
             ->createQueryBuilder("p")
+            ->leftJoin('p.tags', 't')
             ->where('p.nome LIKE :busca')
             ->orWhere('p.descricao LIKE :busca')
+            ->orWhere('t.nome LIKE :busca')
             ->setParameter('busca', "%{$busca}%")
             ->getQuery()
             ->getResult();
