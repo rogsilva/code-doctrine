@@ -44,11 +44,12 @@ class ProdutoService implements ProdutoServiceInterface
                 $categoria = $this->em->getReference("Code\Sistema\Entity\Categoria", $data['categoria']);
                 $this->produto->setCategoria($categoria);
 
-                foreach($data['tags'] as $tag){
-                    $entityTag = $this->em->getReference("Code\Sistema\Entity\Tag", $tag);
-                    $this->produto->addTag($entityTag);
+                if(count($data['tags']) > 0){
+                    foreach($data['tags'] as $tag){
+                        $entityTag = $this->em->getReference("Code\Sistema\Entity\Tag", $tag);
+                        $this->produto->addTag($entityTag);
+                    }
                 }
-
                 $this->produto->setFile($data['file']);
 
                 $this->em->persist($this->produto);
@@ -81,11 +82,13 @@ class ProdutoService implements ProdutoServiceInterface
                 $produtoRepository = $this->em->getRepository("Code\Sistema\Entity\Produto", $this->produto->getId());
                 $produtoRepository->removeAssociationTag($this->produto->getId());
 
-                foreach($data['tags'] as $tag){
-                    $entityTag = $this->em->getReference("Code\Sistema\Entity\Tag", $tag);
-                    $this->produto->addTag($entityTag);
+                if(count($data['tags']) > 0){
+                    foreach($data['tags'] as $tag){
+                        $entityTag = $this->em->getReference("Code\Sistema\Entity\Tag", $tag);
+                        $this->produto->addTag($entityTag);
+                    }
                 }
-
+                
                 if($data['file'] != null){
                     $produtoAntes = $produtoRepository->find($this->produto->getId());
                     self::removeImage($produtoAntes);
